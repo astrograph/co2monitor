@@ -1,0 +1,16 @@
+[Unit]
+Description=CO2 Monitor Service
+After=syslog.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/co2monitor
+ExecStart=/usr/bin/python /home/pi/co2monitor/monitorCO2.py
+SyslogIdentifier=co2monitor
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,4 @@
+# make sure that the USB device is readable for the pi user
+# m h  dom mon dow   command
+SHELL=/bin/bash
+* * * * * if [ $(find /dev/hidraw0 -perm a=rw | wc -l) -eq 0 ] ; then chmod a+rw /dev/hidraw0 ; fi

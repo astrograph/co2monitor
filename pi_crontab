@@ -1,0 +1,2 @@
+# m h  dom mon dow   command
+*/20 * * * * /home/pi/co2monitor/upload.sh >/dev/null 2>&1
