@@ -20,3 +20,18 @@ Follow https://thepihut.com/blogs/raspberry-pi-tutorials/17209332-adding-a-real-
 A [root cronjob](root_crontab) has to be installed to make sure the USB device socket can be read by the pi user.
 
 The script is run by systemd therefore [co2monitor.service](co2monitor.service) has to be copied to `/etc/systemd/system/`
+
+When the co2monitor.service file is installed or changed it has to be reloaded:
+    sudo systemctl daemon-reload
+
+The CO<sub>2</sub> monitoring service can then be controlled via systemctl:
+
+    sudo systemctl enable co2monitor
+    sudo systemctl start co2monitor
+    sudo systemctl status co2monitor
+    sudo systemctl stop co2monitor
+    sudo systemctl restart co2monitor
+    ...
+
+## Visualization
+An [index.html](index.html) is provided for visualizing the CO<sub>2</sub> data on the webserver

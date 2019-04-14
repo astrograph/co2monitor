@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style type="text/css">
+        div {
+            border-radius: 010px;
+            border: 2px solid lightgrey;
+            margin: 10px;
+            background-color: whitesmoke;
+            padding: 20px;
+        }
+        
+        .legend {
+            font-size: 17px;
+            letter-spacing: 1px;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+		h3 {
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>ppm CO<sub>2</sub><h3>
+    <div id="graph" width="100%">
+        <svg width="100%" height="500px"></svg>
+    </div>
+    <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script>
+
+        var div_w = window.getComputedStyle(document.getElementById("graph")).getPropertyValue('width').split('px')[0];
+        var div_h = window.getComputedStyle(document.getElementById("graph")).getPropertyValue('height').split('px')[0];
+		var today = new Date();
+
+        var svg = d3.select("svg"),
+            margin = {
+                top: 20,
+                right: 20,
+                bottom: 30,
+                left: 50
+            },
+            width = div_w - margin.left - margin.right,
+            height = div_h - margin.top - margin.bottom,
+            g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // Parse the date / time
+        var parseTimetamp = d3.timeParse("%Y-%m-%d %H:%M:%S");
+
+        // Set the ranges
+        var x = d3.scaleTime().rangeRound([0, width]);
+        var y = d3.scaleLinear().rangeRound([height, 0]);
+
+        var lineNames = ["CO2"];
+        var lines = new Array();
+
+        lineNames.forEach(function (lineName) {
+            lines.push(d3.line().curve(d3.curveBasis).x(function (d) {
+                return x(d.timestamp);
+            }).y(function (d) {
+                return y(d[lineName]);
+            }));
+        });
+
+        var date_data = formatDate(today) + "_co2.csv";
+        var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+        var logData = drawChart(date_data);
+
+        function formatDate(aDate) {
+            return aDate.getFullYear() + "-" + pad((aDate.getMonth() + 1), 2) + "-" + pad(aDate.getDate(), 2)
+        }
+		
+        function pad(num, size) {
+            var s = "000000000" + num;
+            return s.substr(s.length - size);
+        }
+        function drawChart(dataFile) {
+            g.selectAll("*").remove();
+            d3.text(dataFile, function (error, text) {
+                if (error) throw error;
+                var ssv = d3.dsvFormat(",");
+                data = ssv.parseRows(text, function (d, i) {
+                    return {
+                        timestamp: parseTimetamp(d[0]),
+                        CO2: +d[1]
+                    };
+                });
+                console.log(data);
+                x.domain(d3.extent(data, function (d) {
+                    return d.timestamp;
+                }));
+                y.domain(d3.extent(data, function (d) {
+                    return d.CO2}));
+
+                g.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x).tickFormat(d3.timeFormat("%H:%M")).ticks(d3.timeHour, 1)).select(".domain");
+                g.append("g").call(d3.axisLeft(y)).append("text").attr("fill", "#000").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", "0.71em");
+
+                var column = 0;
+                legendSpace = width / lineNames.length;
+                lineNames.forEach(function (lineName) {
+                    var linecolor = color(column);
+                    g.append("text")
+                        .attr("x", 30)
+                        .attr("y", 10 + column * 20)
+                        .attr("class", "legend") // style the legend
+                        .style("fill", function () { // dynamic colours
+                            return data.color = linecolor;
+                        })
+                        .text(lineNames[column]);
+                    g.append("path").datum(data).attr("fill", "none").attr("stroke", linecolor).attr("stroke-width", 3).attr("d", lines[column++]);
+                });
+
+            });
+        }
+    </script>
+</body>
+
+</html>
