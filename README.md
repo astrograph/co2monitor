@@ -1,4 +1,4 @@
-# CO<sub>2</sub> monitor for Raspberry Pi and Tostmann CO2 monitor
+# CO<sub>2</sub> monitor for Raspberry Pi and Tostmann CO<sub>2</sub> monitor
 
 Monitoring CO<sub>2</sub> level and temperature using a Raspberry Pi and a Tostmann CFA CO<sub>2</sub> Monitor.
 
@@ -22,6 +22,7 @@ A [root cronjob](root_crontab) has to be installed to make sure the USB device s
 The script is run by systemd therefore [co2monitor.service](co2monitor.service) has to be copied to `/etc/systemd/system/`
 
 When the co2monitor.service file is installed or changed it has to be reloaded:
+
     sudo systemctl daemon-reload
 
 The CO<sub>2</sub> monitoring service can then be controlled via systemctl:
