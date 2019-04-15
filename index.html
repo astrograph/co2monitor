@@ -65,19 +65,11 @@
             }));
         });
 
-        var date_data = formatDate(today) + "_co2.csv";
+        var date_data = "co2.csv";
         var color = d3.scaleOrdinal(d3.schemeCategory20);
 
         var logData = drawChart(date_data);
 
-        function formatDate(aDate) {
-            return aDate.getFullYear() + "-" + pad((aDate.getMonth() + 1), 2) + "-" + pad(aDate.getDate(), 2)
-        }
-		
-        function pad(num, size) {
-            var s = "000000000" + num;
-            return s.substr(s.length - size);
-        }
         function drawChart(dataFile) {
             g.selectAll("*").remove();
             d3.text(dataFile, function (error, text) {
