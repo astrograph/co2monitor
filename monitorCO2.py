@@ -62,7 +62,6 @@ if __name__ == "__main__":
             val = decrypted[1] << 8 | decrypted[2]
             
             values[op] = val
-            # start quick, slow down when the values are in
             now = datetime.datetime.now()
             timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
             # From http://co2meters.com/Documentation/AppNotes/AN146-RAD-0401-serial-communication.pdf
